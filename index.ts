@@ -111,6 +111,14 @@ function update() {
   }
 }
 
+function createGraphics() {
+  const canvas = document.getElementById("GameCanvas") as HTMLCanvasElement;
+  const g = canvas.getContext("2d");
+  g.clearRect(0, 0, canvas.width, canvas.height);
+
+  return g;
+}
+
 function drawMap(g: CanvasRenderingContext2D) {
   for (let y = 0; y < map.length; y++) {
     for (let x = 0; x < map[y].length; x++) {
@@ -133,10 +141,7 @@ function drawPlayer(g: CanvasRenderingContext2D) {
 }
 
 function draw() {
-  let canvas = document.getElementById("GameCanvas") as HTMLCanvasElement;
-  let g = canvas.getContext("2d");
-  g.clearRect(0, 0, canvas.width, canvas.height);
-
+  const g = createGraphics();
   drawMap(g);
   drawPlayer(g);
 }
