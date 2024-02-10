@@ -1,4 +1,4 @@
-interface Tile {
+export interface Tile {
   isAir(): boolean;
   isFlux(): boolean;
   isUnbreakable(): boolean;
@@ -16,7 +16,7 @@ interface Tile {
   draw(g: CanvasRenderingContext2D, x: number, y: number): void;
 }
 
-class Air implements Tile {
+export class Air implements Tile {
   isAir() {
     return true;
   }
@@ -57,7 +57,7 @@ class Air implements Tile {
   color(g: CanvasRenderingContext2D) {}
   draw(g: CanvasRenderingContext2D) {}
 }
-class Flux implements Tile {
+export class Flux implements Tile {
   isAir() {
     return false;
   }
@@ -100,7 +100,7 @@ class Flux implements Tile {
     if (!map[y][x].isAir() && !map[y][x].isPlayer()) g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
 }
-class Unbreakable implements Tile {
+export class Unbreakable implements Tile {
   isAir() {
     return false;
   }
@@ -143,7 +143,7 @@ class Unbreakable implements Tile {
     if (!map[y][x].isAir() && !map[y][x].isPlayer()) g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
 }
-class Player implements Tile {
+export class Player implements Tile {
   isAir() {
     return false;
   }
@@ -183,7 +183,7 @@ class Player implements Tile {
   color(g: CanvasRenderingContext2D) {}
   draw(g: CanvasRenderingContext2D) {}
 }
-class Stone implements Tile {
+export class Stone implements Tile {
   isAir() {
     return false;
   }
@@ -225,7 +225,7 @@ class Stone implements Tile {
     if (!map[y][x].isAir() && !map[y][x].isPlayer()) g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
 }
-class FallingStone implements Tile {
+export class FallingStone implements Tile {
   isAir() {
     return false;
   }
@@ -267,7 +267,7 @@ class FallingStone implements Tile {
     if (!map[y][x].isAir() && !map[y][x].isPlayer()) g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
 }
-class Box implements Tile {
+export class Box implements Tile {
   isAir() {
     return false;
   }
@@ -310,7 +310,7 @@ class Box implements Tile {
     if (!map[y][x].isAir() && !map[y][x].isPlayer()) g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
 }
-class FallingBox implements Tile {
+export class FallingBox implements Tile {
   isAir() {
     return false;
   }
@@ -352,7 +352,7 @@ class FallingBox implements Tile {
     if (!map[y][x].isAir() && !map[y][x].isPlayer()) g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
 }
-class Key1 implements Tile {
+export class Key1 implements Tile {
   isAir() {
     return false;
   }
@@ -394,7 +394,7 @@ class Key1 implements Tile {
     if (!map[y][x].isAir() && !map[y][x].isPlayer()) g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
 }
-class Lock1 implements Tile {
+export class Lock1 implements Tile {
   isAir() {
     return false;
   }
@@ -437,7 +437,7 @@ class Lock1 implements Tile {
     if (!map[y][x].isAir() && !map[y][x].isPlayer()) g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
 }
-class Key2 implements Tile {
+export class Key2 implements Tile {
   isAir() {
     return false;
   }
@@ -480,7 +480,7 @@ class Key2 implements Tile {
     if (!map[y][x].isAir() && !map[y][x].isPlayer()) g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
 }
-class Lock2 implements Tile {
+export class Lock2 implements Tile {
   isAir() {
     return false;
   }

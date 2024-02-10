@@ -1,4 +1,4 @@
-interface Input {
+export interface Input {
   isRight(): boolean;
   isLeft(): boolean;
   isUp(): boolean;
@@ -7,7 +7,7 @@ interface Input {
   handle(): void;
 }
 
-class Right implements Input {
+export class Right implements Input {
   isRight() {
     return true;
   }
@@ -25,7 +25,7 @@ class Right implements Input {
     moveHorizontal(-1);
   }
 }
-class Left implements Input {
+export class Left implements Input {
   isRight() {
     return false;
   }
@@ -43,7 +43,7 @@ class Left implements Input {
     moveHorizontal(1);
   }
 }
-class Up implements Input {
+export class Up implements Input {
   isRight() {
     return false;
   }
@@ -61,7 +61,7 @@ class Up implements Input {
     moveVertical(-1);
   }
 }
-class Down implements Input {
+export class Down implements Input {
   isRight() {
     return false;
   }
