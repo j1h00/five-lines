@@ -85,9 +85,7 @@ interface Tile {
   isFlux(): boolean;
   isUnbreakable(): boolean;
   isPlayer(): boolean;
-  isStone(): boolean;
   isFallingStone(): boolean;
-  isBox(): boolean;
   isFallingBox(): boolean;
   isKey1(): boolean;
   isLock1(): boolean;
@@ -131,13 +129,7 @@ class Air implements Tile {
   isPlayer() {
     return false;
   }
-  isStone() {
-    return false;
-  }
   isFallingStone() {
-    return false;
-  }
-  isBox() {
     return false;
   }
   isFallingBox() {
@@ -190,13 +182,7 @@ class Flux implements Tile {
   isPlayer() {
     return false;
   }
-  isStone() {
-    return false;
-  }
   isFallingStone() {
-    return false;
-  }
-  isBox() {
     return false;
   }
   isFallingBox() {
@@ -249,13 +235,7 @@ class Unbreakable implements Tile {
   isPlayer() {
     return false;
   }
-  isStone() {
-    return false;
-  }
   isFallingStone() {
-    return false;
-  }
-  isBox() {
     return false;
   }
   isFallingBox() {
@@ -307,13 +287,7 @@ class Player implements Tile {
   isPlayer() {
     return true;
   }
-  isStone() {
-    return false;
-  }
   isFallingStone() {
-    return false;
-  }
-  isBox() {
     return false;
   }
   isFallingBox() {
@@ -362,13 +336,7 @@ class Stone implements Tile {
   isPlayer() {
     return false;
   }
-  isStone() {
-    return true;
-  }
   isFallingStone() {
-    return false;
-  }
-  isBox() {
     return false;
   }
   isFallingBox() {
@@ -425,14 +393,8 @@ class FallingStone implements Tile {
   isPlayer() {
     return false;
   }
-  isStone() {
-    return false;
-  }
   isFallingStone() {
     return true;
-  }
-  isBox() {
-    return false;
   }
   isFallingBox() {
     return false;
@@ -481,14 +443,8 @@ class Box implements Tile {
   isPlayer() {
     return false;
   }
-  isStone() {
-    return false;
-  }
   isFallingStone() {
     return false;
-  }
-  isBox() {
-    return true;
   }
   isFallingBox() {
     return false;
@@ -543,13 +499,7 @@ class FallingBox implements Tile {
   isPlayer() {
     return false;
   }
-  isStone() {
-    return false;
-  }
   isFallingStone() {
-    return false;
-  }
-  isBox() {
     return false;
   }
   isFallingBox() {
@@ -600,13 +550,7 @@ class Key1 implements Tile {
   isPlayer() {
     return false;
   }
-  isStone() {
-    return false;
-  }
   isFallingStone() {
-    return false;
-  }
-  isBox() {
     return false;
   }
   isFallingBox() {
@@ -659,13 +603,7 @@ class Lock1 implements Tile {
   isPlayer() {
     return false;
   }
-  isStone() {
-    return false;
-  }
   isFallingStone() {
-    return false;
-  }
-  isBox() {
     return false;
   }
   isFallingBox() {
@@ -716,13 +654,7 @@ class Key2 implements Tile {
   isPlayer() {
     return false;
   }
-  isStone() {
-    return false;
-  }
   isFallingStone() {
-    return false;
-  }
-  isBox() {
     return false;
   }
   isFallingBox() {
@@ -775,13 +707,7 @@ class Lock2 implements Tile {
   isPlayer() {
     return false;
   }
-  isStone() {
-    return false;
-  }
   isFallingStone() {
-    return false;
-  }
-  isBox() {
     return false;
   }
   isFallingBox() {
@@ -931,10 +857,10 @@ function handleInputs() {
 }
 
 function updateTile(x: number, y: number) {
-  if ((map[y][x].isStone() || map[y][x].isFallingStone()) && map[y + 1][x].isAir()) {
+  if (map[y][x].isStony() && map[y + 1][x].isAir()) {
     map[y + 1][x] = new FallingStone();
     map[y][x] = new Air();
-  } else if ((map[y][x].isBox() || map[y][x].isFallingBox()) && map[y + 1][x].isAir()) {
+  } else if (map[y][x].isBoxy() && map[y + 1][x].isAir()) {
     map[y + 1][x] = new FallingBox();
     map[y][x] = new Air();
   } else if (map[y][x].isFallingStone()) {
