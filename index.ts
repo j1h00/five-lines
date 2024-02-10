@@ -123,7 +123,6 @@ interface Tile {
   isStony(): boolean;
   isBoxy(): boolean;
 
-  // color(g: CanvasRenderingContext2D): void;
   draw(g: CanvasRenderingContext2D, x: number, y: number): void;
   moveHorizontal(dx: number): void;
 }
@@ -175,7 +174,6 @@ class Air implements Tile {
     return false;
   }
 
-  color(g: CanvasRenderingContext2D) {}
   draw(g: CanvasRenderingContext2D) {}
   moveHorizontal(dx: number) {
     moveToTile(playerx + dx, playery);
@@ -332,7 +330,6 @@ class Player implements Tile {
   isLock2() {
     return false;
   }
-  color(g: CanvasRenderingContext2D) {}
   draw(g: CanvasRenderingContext2D) {}
   moveHorizontal(dx: number) {}
 }
@@ -813,11 +810,6 @@ function createGraphics() {
 
   return g;
 }
-
-// function drawTile(g: CanvasRenderingContext2D, x: number, y: number) {
-//   map[y][x].color(g);
-//   if (!map[y][x].isAir() && !map[y][x].isPlayer()) g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-// }
 
 function drawMap(g: CanvasRenderingContext2D) {
   for (let y = 0; y < map.length; y++) {
