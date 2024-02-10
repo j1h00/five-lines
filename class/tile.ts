@@ -1,4 +1,4 @@
-interface Tile2 {
+interface Tile {
   isAir(): boolean;
   isFlux(): boolean;
   isUnbreakable(): boolean;
