@@ -29,6 +29,8 @@ interface Input {
   isLeft(): boolean;
   isUp(): boolean;
   isDown(): boolean;
+
+  handle(): void;
 }
 
 class Right implements Input {
@@ -44,8 +46,11 @@ class Right implements Input {
   isDown() {
     return false;
   }
-}
 
+  handle() {
+    moveHorizontal(-1);
+  }
+}
 class Left implements Input {
   isRight() {
     return false;
@@ -58,6 +63,10 @@ class Left implements Input {
   }
   isDown() {
     return false;
+  }
+
+  handle() {
+    moveHorizontal(1);
   }
 }
 class Up implements Input {
@@ -73,8 +82,11 @@ class Up implements Input {
   isDown() {
     return false;
   }
-}
 
+  handle() {
+    moveVertical(-1);
+  }
+}
 class Down implements Input {
   isRight() {
     return false;
@@ -88,8 +100,11 @@ class Down implements Input {
   isDown() {
     return true;
   }
-}
 
+  handle() {
+    moveVertical(1);
+  }
+}
 
 let playerx = 1;
 let playery = 1;
@@ -153,20 +168,17 @@ function moveVertical(dy: number) {
 }
 
 function handleInput(input: Input) {
-  if (input.isLeft()) moveHorizontal(-1);
-    else if (input.isRight) moveHorizontal(1);
-    else if (input.isUp) moveVertical(-1);
-    else if (input.isDown) moveVertical(1);
+  input.handle();
 }
 
 function handleInputs() {
   while (inputs.length > 0) {
     let current = inputs.pop();
-    handleInput(current)
+    handleInput(current);
   }
 }
 
-function updateTile(x:number, y:number) {
+function updateTile(x: number, y: number) {
   if ((map[y][x] === Tile.STONE || map[y][x] === Tile.FALLING_STONE) && map[y + 1][x] === Tile.AIR) {
     map[y + 1][x] = Tile.FALLING_STONE;
     map[y][x] = Tile.AIR;
@@ -184,7 +196,8 @@ function updateMap() {
   // updateTile
   for (let y = map.length - 1; y >= 0; y--) {
     for (let x = 0; x < map[y].length; x++) {
-      updateTile(x, y)
+      updateTile(x, y);
+    }
   }
 }
 
