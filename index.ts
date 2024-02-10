@@ -80,6 +80,33 @@ class Down implements Input {
   }
 }
 
+interface FallingState {
+  isFalling(): boolean;
+
+  moveHorizontal(tile: Tile, dx: number): void;
+}
+
+class Falling implements FallingState {
+  isFalling() {
+    return true;
+  }
+
+  moveHorizontal(tile: Tile, dx: number) {}
+}
+
+class Resting implements FallingState {
+  isFalling() {
+    return false;
+  }
+
+  moveHorizontal(tile: Tile, dx: number) {
+    if (map[playery][playerx + dx + dx].isAir() && !map[playery + 1][playerx + dx].isAir()) {
+      map[playery][playerx + dx + dx] = tile;
+      moveToTile(playerx + dx, playery);
+    }
+  }
+}
+
 interface Tile {
   isAir(): boolean;
   isFlux(): boolean;
@@ -310,10 +337,7 @@ class Player implements Tile {
   moveHorizontal(dx: number) {}
 }
 class Stone implements Tile {
-  private falling: boolean;
-  constructor(falling: boolean) {
-    this.falling = false;
-  }
+  constructor(private falling: FallingState) {}
 
   isStony() {
     return true;
@@ -342,7 +366,7 @@ class Stone implements Tile {
     return false;
   }
   isFallingStone() {
-    return this.falling;
+    return this.falling.isFalling();
   }
   isFallingBox() {
     return false;
@@ -364,13 +388,7 @@ class Stone implements Tile {
     if (!map[y][x].isAir() && !map[y][x].isPlayer()) g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
   moveHorizontal(dx: number): void {
-    if (!this.isFallingStone()) {
-      if (map[playery][playerx + dx + dx].isAir() && !map[playery + 1][playerx + dx].isAir()) {
-        map[playery][playerx + dx + dx] = this;
-        moveToTile(playerx + dx, playery);
-      }
-    } else if (this.isFallingStone()) {
-    }
+    this.falling.moveHorizontal(this, dx);
   }
 }
 
@@ -735,9 +753,9 @@ function transformTile(raw: RawTile) {
     case RawTile.PLAYER:
       return new Player();
     case RawTile.STONE:
-      return new Stone(false);
+      return new Stone(new Falling());
     case RawTile.FALLING_STONE:
-      return new Stone(true);
+      return new Stone(new Resting());
     case RawTile.BOX:
       return new Box();
     case RawTile.FALLING_BOX:
