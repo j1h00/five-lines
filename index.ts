@@ -22,7 +22,7 @@ class Right implements Input {
   }
 
   handle() {
-    map[playery][playerx - 1].moveHorizontal(-1);
+    map[playery][playerx + 1].moveHorizontal(1);
   }
 }
 class Left implements Input {
@@ -40,7 +40,7 @@ class Left implements Input {
   }
 
   handle() {
-    map[playery][playerx + 1].moveHorizontal(1);
+    map[playery][playerx - 1].moveHorizontal(-1);
   }
 }
 class Up implements Input {
