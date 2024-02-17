@@ -274,18 +274,16 @@ class FallingStrategy {
   }
 
   update(tile: Tile, x: number, y: number) {
-    if (map[y + 1][x].isAir()) {
-      // map[y][x].drop();
-      this.falling = new Falling();
+    this.falling = map[y + 1][x].isAir() ? new Falling() : new Resting();
 
-      // map[y+1][x] = map[y][x]
+    // if in the middle of the method => method extraction
+    this.drop(tile, x, y);
+  }
+
+  private drop(tile: Tile, x: number, y: number) {
+    if (this.falling.isFalling()) {
       map[y + 1][x] = tile;
       map[y][x] = new Air();
-      // } else if (this.getFalling().isFalling()) {
-      // => this.falling becomes Resting anyway
-    } else {
-      // map[y][x].rest()
-      this.falling = new Resting();
     }
   }
 }
