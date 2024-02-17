@@ -238,7 +238,7 @@ class Flux implements Tile {
 
   draw(g: CanvasRenderingContext2D, x: number, y: number): void {
     g.fillStyle = '#ccffcc';
-    if (!map[y][x].isAir() && !map[y][x].isPlayer()) g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+    g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
   moveHorizontal(dx: number) {
     moveToTile(playerx + dx, playery);
@@ -295,7 +295,7 @@ class Unbreakable implements Tile {
 
   draw(g: CanvasRenderingContext2D, x: number, y: number): void {
     g.fillStyle = '#999999';
-    if (!map[y][x].isAir() && !map[y][x].isPlayer()) g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+    g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
 
   moveHorizontal(dx: number) {}
@@ -404,7 +404,7 @@ class Stone implements Tile {
   }
   draw(g: CanvasRenderingContext2D, x: number, y: number): void {
     g.fillStyle = '#0000cc';
-    if (!map[y][x].isAir() && !map[y][x].isPlayer()) g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+    g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
   moveHorizontal(dx: number): void {
     this.falling.moveHorizontal(this, dx);
@@ -478,7 +478,7 @@ class Box implements Tile {
 
   draw(g: CanvasRenderingContext2D, x: number, y: number): void {
     g.fillStyle = '#8b4513';
-    if (!map[y][x].isAir() && !map[y][x].isPlayer()) g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+    g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
 
   moveHorizontal(dx: number): void {
@@ -551,7 +551,7 @@ class Key1 implements Tile {
 
   draw(g: CanvasRenderingContext2D, x: number, y: number): void {
     g.fillStyle = '#ffcc00';
-    if (!map[y][x].isAir() && !map[y][x].isPlayer()) g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+    g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
 
   moveHorizontal(dx: number): void {
@@ -609,7 +609,7 @@ class Lock1 implements Tile {
 
   draw(g: CanvasRenderingContext2D, x: number, y: number): void {
     g.fillStyle = '#ffcc00';
-    if (!map[y][x].isAir() && !map[y][x].isPlayer()) g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+    g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
   moveHorizontal(dx: number) {}
   drop() {}
@@ -663,7 +663,7 @@ class Key2 implements Tile {
 
   draw(g: CanvasRenderingContext2D, x: number, y: number): void {
     g.fillStyle = '#00ccff';
-    if (!map[y][x].isAir() && !map[y][x].isPlayer()) g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+    g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
   moveHorizontal(dx: number): void {
     removeLock1();
@@ -719,7 +719,7 @@ class Lock2 implements Tile {
 
   draw(g: CanvasRenderingContext2D, x: number, y: number): void {
     g.fillStyle = '#00ccff';
-    if (!map[y][x].isAir() && !map[y][x].isPlayer()) g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+    g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
   moveHorizontal(dx: number) {}
   drop() {}
@@ -875,7 +875,7 @@ function createGraphics() {
 function drawMap(g: CanvasRenderingContext2D) {
   for (let y = 0; y < map.length; y++) {
     for (let x = 0; x < map[y].length; x++) {
-      map[x][y].draw(g, x, y);
+      map[y][x].draw(g, x, y);
     }
   }
 }
