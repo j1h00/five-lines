@@ -456,14 +456,18 @@ function transformMap() {
 
 let inputs: Input[] = [];
 
-class RemoveStrategy {
+interface RemoveStrategy {
+  check(tile: Tile): boolean;
+}
+
+class RemoveLock1 implements RemoveStrategy {
   check(tile: Tile) {
     return tile.isLock1();
   }
 }
 
 function removeLock1() {
-  const shouldRemove = new RemoveStrategy();
+  const shouldRemove = new RemoveLock1();
   for (let y = 0; y < map.length; y++) {
     for (let x = 0; x < map[y].length; x++) {
       if (shouldRemove.check(map[y][x])) {
