@@ -286,6 +286,22 @@ class Box implements Tile {
   }
 }
 
+interface RemoveStrategy {
+  check(tile: Tile): boolean;
+}
+
+class RemoveLock1 implements RemoveStrategy {
+  check(tile: Tile) {
+    return tile.isLock1();
+  }
+}
+
+class RemoveLock2 implements RemoveStrategy {
+  check(tile: Tile) {
+    return tile.isLock2();
+  }
+}
+
 // class KeyConfiguration {
 //   constructor(private color: string, _1: boolean, private removeStrategy: RemoveStrategy) {}
 
@@ -301,15 +317,23 @@ class Box implements Tile {
 // }
 
 class KeyConfiguration {
-  constructor(private color: string) {}
+  constructor(private color: string, private _1: boolean, private removeStrategy: RemoveStrategy) {}
 
   getColor() {
     return this.color;
   }
+
+  is1() {
+    return this._1;
+  }
+
+  getRemoveStrategy() {
+    return this.removeStrategy;
+  }
 }
 
 class Key implements Tile {
-  constructor(private keyConf: KeyConfiguration, private removeStrategy: RemoveStrategy) {}
+  constructor(private keyConf: KeyConfiguration) {}
   isAir() {
     return false;
   }
@@ -326,26 +350,26 @@ class Key implements Tile {
   }
 
   moveHorizontal(dx: number) {
-    remove(this.removeStrategy);
+    remove(this.keyConf.getRemoveStrategy());
     moveToTile(playerx + dx, playery);
   }
   moveVertical(dy: number) {
-    remove(this.removeStrategy);
+    remove(this.keyConf.getRemoveStrategy());
     moveToTile(playerx, playery + dy);
   }
 
   update(x: number, y: number) {}
 }
 class LockTile implements Tile {
-  constructor(private keyConf: KeyConfiguration, private lock1: boolean) {}
+  constructor(private keyConf: KeyConfiguration) {}
   isAir() {
     return false;
   }
   isLock1() {
-    return this.lock1;
+    return this.keyConf.is1();
   }
   isLock2() {
-    return !this.lock1;
+    return !this.keyConf.is1();
   }
 
   draw(g: CanvasRenderingContext2D, x: number, y: number) {
@@ -392,6 +416,9 @@ function assetExhausted(x: never): never {
   throw new Error(`Unexpected object: ` + x);
 }
 
+const YELLOW_KEY = new KeyConfiguration('#ffcc00', true, new RemoveLock1());
+const BLUE_KEY = new KeyConfiguration('#00ccff', true, new RemoveLock1());
+
 function transformTile(raw: RawTile) {
   switch (raw) {
     case RawTile.AIR:
@@ -411,13 +438,13 @@ function transformTile(raw: RawTile) {
     case RawTile.FALLING_BOX:
       return new Box(new Falling());
     case RawTile.KEY1:
-      return new Key(new KeyConfiguration('#ffcc00'), new RemoveLock1());
+      return new Key(YELLOW_KEY);
     case RawTile.LOCK1:
-      return new LockTile(new KeyConfiguration('#ffcc00'), true);
+      return new LockTile(YELLOW_KEY);
     case RawTile.KEY2:
-      return new Key(new KeyConfiguration('#00ccff'), new RemoveLock2());
+      return new Key(BLUE_KEY);
     case RawTile.LOCK2:
-      return new LockTile(new KeyConfiguration('#00ccff'), false);
+      return new LockTile(BLUE_KEY);
     default:
       return assetExhausted(raw);
   }
@@ -434,22 +461,6 @@ function transformMap() {
 }
 
 let inputs: Input[] = [];
-
-interface RemoveStrategy {
-  check(tile: Tile): boolean;
-}
-
-class RemoveLock1 implements RemoveStrategy {
-  check(tile: Tile) {
-    return tile.isLock1();
-  }
-}
-
-class RemoveLock2 implements RemoveStrategy {
-  check(tile: Tile) {
-    return tile.isLock2();
-  }
-}
 
 function remove(shouldRemove: RemoveStrategy) {
   for (let y = 0; y < map.length; y++) {
