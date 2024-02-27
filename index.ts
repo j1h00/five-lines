@@ -286,6 +286,7 @@ class Box implements Tile {
   }
 }
 class Key1 implements Tile {
+  constructor(private isKey1: boolean) {}
   isAir() {
     return false;
   }
@@ -297,17 +298,28 @@ class Key1 implements Tile {
   }
 
   draw(g: CanvasRenderingContext2D, x: number, y: number) {
-    g.fillStyle = '#ffcc00';
+    if (this.isKey1) {
+      g.fillStyle = '#ffcc00';
+    } else {
+      g.fillStyle = '#00ccff';
+    }
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
 
   moveHorizontal(dx: number) {
-    remove(new RemoveLock1());
+    if (this.isKey1) {
+      remove(new RemoveLock1());
+    } else {
+      remove(new RemoveLock2());
+    }
     moveToTile(playerx + dx, playery);
   }
-
   moveVertical(dy: number) {
-    remove(new RemoveLock1());
+    if (this.isKey1) {
+      remove(new RemoveLock1());
+    } else {
+      remove(new RemoveLock2());
+    }
     moveToTile(playerx, playery + dy);
   }
 
@@ -333,6 +345,7 @@ class Lock1 implements Tile {
   update(x: number, y: number) {}
 }
 class Key2 implements Tile {
+  constructor(private isKey1: boolean) {}
   isAir() {
     return false;
   }
@@ -344,15 +357,27 @@ class Key2 implements Tile {
   }
 
   draw(g: CanvasRenderingContext2D, x: number, y: number) {
-    g.fillStyle = '#00ccff';
+    if (this.isKey1) {
+      g.fillStyle = '#ffcc00';
+    } else {
+      g.fillStyle = '#00ccff';
+    }
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
   moveHorizontal(dx: number) {
-    remove(new RemoveLock2());
+    if (this.isKey1) {
+      remove(new RemoveLock1());
+    } else {
+      remove(new RemoveLock2());
+    }
     moveToTile(playerx + dx, playery);
   }
   moveVertical(dy: number) {
-    remove(new RemoveLock2());
+    if (this.isKey1) {
+      remove(new RemoveLock1());
+    } else {
+      remove(new RemoveLock2());
+    }
     moveToTile(playerx, playery + dy);
   }
 
