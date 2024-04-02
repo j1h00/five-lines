@@ -84,6 +84,7 @@ interface FallingState {
   isFalling(): boolean;
 
   moveHorizontal(tile: Tile, dx: number): void;
+  drop(tile: Tile, x: number, y: number): void;
 }
 
 class Falling implements FallingState {
@@ -92,6 +93,11 @@ class Falling implements FallingState {
   }
 
   moveHorizontal(tile: Tile, dx: number) {}
+
+  drop(tile: Tile, x: number, y: number) {
+    map[y + 1][x] = tile;
+    map[y][x] = new Air();
+  }
 }
 
 class Resting implements FallingState {
@@ -105,6 +111,8 @@ class Resting implements FallingState {
       moveToTile(playerx + dx, playery);
     }
   }
+
+  drop(tile: Tile, x: number, y: number) {}
 }
 
 interface Tile {
@@ -232,15 +240,7 @@ class FallingStrategy {
     // 4.1.1 Rule: Do not use else in if statements
     this.falling = map[y + 1][x].getBlockOnTopState();
 
-    // if in the middle of the method => method extraction
-    this.drop(tile, x, y);
-  }
-
-  private drop(tile: Tile, x: number, y: number) {
-    if (this.falling.isFalling()) {
-      map[y + 1][x] = tile;
-      map[y][x] = new Air();
-    }
+    this.falling.drop(tile, x, y);
   }
 
   moveHorizontal(tile: Tile, dx: number) {
