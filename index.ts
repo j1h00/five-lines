@@ -302,20 +302,6 @@ class RemoveLock2 implements RemoveStrategy {
   }
 }
 
-// class KeyConfiguration {
-//   constructor(private color: string, _1: boolean, private removeStrategy: RemoveStrategy) {}
-
-//   getColor() {
-//     return this.color;
-//   }
-//   is1() {
-//     return this._1;
-//   }
-//   getRemoveStrategy() {
-//     return this.removeStrategy;
-//   }
-// }
-
 class KeyConfiguration {
   constructor(private color: string, private _1: boolean, private removeStrategy: RemoveStrategy) {}
 
@@ -327,8 +313,12 @@ class KeyConfiguration {
     return this._1;
   }
 
-  getRemoveStrategy() {
-    return this.removeStrategy;
+  // private getRemoveStrategy() {
+  //   return this.removeStrategy;
+  // }
+
+  removeLock() {
+    remove(this.removeStrategy);
   }
 }
 
@@ -350,11 +340,11 @@ class Key implements Tile {
   }
 
   moveHorizontal(dx: number) {
-    remove(this.keyConf.getRemoveStrategy());
+    this.keyConf.removeLock();
     moveToTile(playerx + dx, playery);
   }
   moveVertical(dy: number) {
-    remove(this.keyConf.getRemoveStrategy());
+    this.keyConf.removeLock();
     moveToTile(playerx, playery + dy);
   }
 
