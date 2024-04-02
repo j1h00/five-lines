@@ -117,6 +117,8 @@ interface Tile {
   moveVertical(dy: number): void;
 
   update(x: number, y: number): void;
+
+  getBlockOnTopState(): FallingState;
 }
 
 class Air implements Tile {
@@ -140,6 +142,10 @@ class Air implements Tile {
   }
 
   update(x: number, y: number) {}
+
+  getBlockOnTopState() {
+    return new Falling();
+  }
 }
 class Flux implements Tile {
   isAir() {
@@ -165,6 +171,10 @@ class Flux implements Tile {
   }
 
   update(x: number, y: number) {}
+
+  getBlockOnTopState() {
+    return new Resting();
+  }
 }
 class Unbreakable implements Tile {
   isAir() {
@@ -186,6 +196,10 @@ class Unbreakable implements Tile {
   moveVertical(dy: number) {}
 
   update(x: number, y: number) {}
+
+  getBlockOnTopState() {
+    return new Resting();
+  }
 }
 class Player implements Tile {
   isAir() {
@@ -202,6 +216,10 @@ class Player implements Tile {
   moveHorizontal(dx: number) {}
   moveVertical(dy: number) {}
   update(x: number, y: number) {}
+
+  getBlockOnTopState() {
+    return new Resting();
+  }
 }
 
 class FallingStrategy {
@@ -211,7 +229,8 @@ class FallingStrategy {
   // }
 
   update(tile: Tile, x: number, y: number) {
-    this.falling = map[y + 1][x].isAir() ? new Falling() : new Resting();
+    // 4.1.1 Rule: Do not use else in if statements
+    this.falling = map[y + 1][x].getBlockOnTopState();
 
     // if in the middle of the method => method extraction
     this.drop(tile, x, y);
@@ -258,6 +277,10 @@ class Stone implements Tile {
   update(x: number, y: number) {
     this.fallingStrategy.update(this, x, y);
   }
+
+  getBlockOnTopState() {
+    return new Resting();
+  }
 }
 
 class Box implements Tile {
@@ -287,6 +310,10 @@ class Box implements Tile {
 
   update(x: number, y: number) {
     this.fallingStrategy.update(this, x, y);
+  }
+
+  getBlockOnTopState() {
+    return new Resting();
   }
 }
 
@@ -354,6 +381,10 @@ class Key implements Tile {
   }
 
   update(x: number, y: number) {}
+
+  getBlockOnTopState() {
+    return new Resting();
+  }
 }
 class LockTile implements Tile {
   constructor(private keyConf: KeyConfiguration) {}
@@ -374,6 +405,10 @@ class LockTile implements Tile {
   moveHorizontal(dx: number) {}
   moveVertical(dy: number) {}
   update(x: number, y: number) {}
+
+  getBlockOnTopState() {
+    return new Resting();
+  }
 }
 
 const TILE_SIZE = 30;
