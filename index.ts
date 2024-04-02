@@ -305,8 +305,9 @@ class RemoveLock2 implements RemoveStrategy {
 class KeyConfiguration {
   constructor(private color: string, private _1: boolean, private removeStrategy: RemoveStrategy) {}
 
-  getColor() {
-    return this.color;
+  setColor(g: CanvasRenderingContext2D) {
+    // 3.3.1 Rule: Call or forward, do one thing only
+    g.fillStyle = this.color;
   }
 
   is1() {
@@ -335,7 +336,7 @@ class Key implements Tile {
   }
 
   draw(g: CanvasRenderingContext2D, x: number, y: number) {
-    g.fillStyle = this.keyConf.getColor();
+    this.keyConf.setColor(g);
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
 
@@ -363,7 +364,7 @@ class LockTile implements Tile {
   }
 
   draw(g: CanvasRenderingContext2D, x: number, y: number) {
-    g.fillStyle = this.keyConf.getColor();
+    this.keyConf.setColor(g);
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
   moveHorizontal(dx: number) {}
