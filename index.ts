@@ -129,8 +129,7 @@ class Falling {
   }
   moveHorizontal(map: Map, player: Player, tile: Tile, dx: number) {}
   drop(map: Map, tile: Tile, x: number, y: number) {
-    map.getMap()[y + 1][x] = tile;
-    map.getMap()[y][x] = new Air();
+    map.drop(tile, x, y);
   }
 }
 class Resting {
@@ -257,7 +256,7 @@ class LockTile implements Tile {
 class FallStrategy {
   constructor(private falling: FallingState) {}
   update(map: Map, tile: Tile, x: number, y: number) {
-    this.falling = map.getMap()[y + 1][x].getBlockOnTopState();
+    this.falling = map.getBlockOnTopState(x, y + 1);
     this.falling.drop(map, tile, x, y);
   }
   moveHorizontal(map: Map, player: Player, tile: Tile, dx: number) {
@@ -301,23 +300,22 @@ class Player {
     g.fillRect(this.x * TILE_SIZE, this.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
   moveHorizontal(map: Map, dx: number) {
-    map.getMap()[this.y][this.x + dx].moveHorizontal(map, this, dx);
+    map.moveHorizontal(this, this.x, this.y, dx);
   }
   moveVertical(map: Map, dy: number) {
-    map.getMap()[this.y + dy][this.x].moveVertical(map, this, dy);
+    map.moveVertical(this, this.x, this.y, dy);
   }
   move(map: Map, dx: number, dy: number) {
     this.moveToTile(map, this.x + dx, this.y + dy);
   }
   pushHorizontal(map: Map, tile: Tile, dx: number) {
-    if (map.getMap()[this.y][this.x + dx + dx].isAir() && !map.getMap()[this.y + 1][this.x + dx].isAir()) {
-      map.getMap()[this.y][this.x + dx + dx] = tile;
+    if (map.isAir(this.x + dx + dx, this.y) && !map.isAir(this.x + dx, this.y + 1)) {
+      map.setTile(this.x + dx + dx, this.y, tile);
       this.moveToTile(map, this.x + dx, this.y);
     }
   }
   private moveToTile(map: Map, newx: number, newy: number) {
-    map.getMap()[this.y][this.x] = new Air();
-    map.getMap()[newy][newx] = new PlayerTile();
+    map.movePlayer(this.x, this.y, newx, newy);
     this.x = newx;
     this.y = newy;
   }
@@ -333,12 +331,6 @@ let rawMap: RawTile[][] = [
 ];
 class Map {
   private map: Tile[][];
-  getMap() {
-    return this.map;
-  }
-  setMap(map: Tile[][]) {
-    this.map = map;
-  }
   transform() {
     this.map = new Array(rawMap.length);
     for (let y = 0; y < rawMap.length; y++) {
@@ -359,6 +351,38 @@ class Map {
     for (let y = 0; y < this.map.length; y++) {
       for (let x = 0; x < this.map[y].length; x++) {
         this.map[y][x].draw(g, x, y);
+      }
+    }
+  }
+  isAir(x: number, y: number) {
+    return this.map[y][x].isAir();
+  }
+  drop(tile: Tile, x: number, y: number) {
+    this.map[y + 1][x] = tile;
+    this.map[y][x] = new Air();
+  }
+  getBlockOnTopState(x: number, y: number) {
+    return this.map[y][x].getBlockOnTopState();
+  }
+  setTile(x: number, y: number, tile: Tile) {
+    this.map[y][x] = tile;
+  }
+  movePlayer(x: number, y: number, newx: number, newy: number) {
+    this.map[y][x] = new Air();
+    this.map[newy][newx] = new PlayerTile();
+  }
+  moveHorizontal(player: Player, x: number, y: number, dx: number) {
+    this.map[y][x + dx].moveHorizontal(this, player, dx);
+  }
+  moveVertical(player: Player, x: number, y: number, dy: number) {
+    this.map[y + dy][x].moveVertical(this, player, dy);
+  }
+  remove(shouldRemove: RemoveStrategy) {
+    for (let y = 0; y < this.map.length; y++) {
+      for (let x = 0; x < this.map[y].length; x++) {
+        if (shouldRemove.check(this.map[y][x])) {
+          this.map[y][x] = new Air();
+        }
       }
     }
   }
@@ -400,16 +424,6 @@ function transformTile(tile: RawTile) {
 
 let inputs: Input[] = [];
 
-function remove(map: Map, shouldRemove: RemoveStrategy) {
-  for (let y = 0; y < map.getMap().length; y++) {
-    for (let x = 0; x < map.getMap()[y].length; x++) {
-      if (shouldRemove.check(map.getMap()[y][x])) {
-        map.getMap()[y][x] = new Air();
-      }
-    }
-  }
-}
-
 interface RemoveStrategy {
   check(tile: Tile): boolean;
 }
@@ -433,7 +447,7 @@ class KeyConfiguration {
     return this._1;
   }
   removeLock(map: Map) {
-    remove(map, this.removeStrategy);
+    map.remove(this.removeStrategy);
   }
 }
 const YELLOW_KEY = new KeyConfiguration('#ffcc00', true, new RemoveLock1());
