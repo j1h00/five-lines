@@ -530,10 +530,6 @@ function remove(shouldRemove: RemoveStrategy) {
   }
 }
 
-function moveToTile(newx: number, newy: number) {
-  player.moveToTile(newx, newy);
-}
-
 function handleInputs() {
   while (inputs.length > 0) {
     let current = inputs.pop();
