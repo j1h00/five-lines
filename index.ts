@@ -22,7 +22,7 @@ class Right implements Input {
   }
 
   handle() {
-    map[player.getY()][player.getX() + 1].moveHorizontal(1);
+    map[player.getY()][player.getX() + 1].moveHorizontal(player, 1);
   }
 }
 class Left implements Input {
@@ -40,7 +40,7 @@ class Left implements Input {
   }
 
   handle() {
-    map[player.getY()][player.getX() - 1].moveHorizontal(-1);
+    map[player.getY()][player.getX() - 1].moveHorizontal(player, -1);
   }
 }
 class Up implements Input {
@@ -58,7 +58,7 @@ class Up implements Input {
   }
 
   handle() {
-    map[player.getY() - 1][player.getX()].moveVertical(player: Player, -1);
+    map[player.getY() - 1][player.getX()].moveVertical(player, -1);
   }
 }
 class Down implements Input {
@@ -76,7 +76,7 @@ class Down implements Input {
   }
 
   handle() {
-    map[player.getY() + 1][player.getX()].moveVertical(player: Player, 1);
+    map[player.getY() + 1][player.getX()].moveVertical(player, 1);
   }
 }
 
@@ -571,7 +571,7 @@ function drawMap(g: CanvasRenderingContext2D) {
 }
 
 function drawPlayer(g: CanvasRenderingContext2D) {
-  player.draw(g)
+  player.draw(g);
 }
 
 function draw() {
