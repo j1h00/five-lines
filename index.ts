@@ -339,6 +339,29 @@ class Map {
   setMap(map: Tile[][]) {
     this.map = map;
   }
+  transform() {
+    this.map = new Array(rawMap.length);
+    for (let y = 0; y < rawMap.length; y++) {
+      this.map[y] = new Array(rawMap[y].length);
+      for (let x = 0; x < rawMap[y].length; x++) {
+        this.map[y][x] = transformTile(rawMap[y][x]);
+      }
+    }
+  }
+  update() {
+    for (let y = this.map.length - 1; y >= 0; y--) {
+      for (let x = 0; x < this.map[y].length; x++) {
+        this.map[y][x].update(this, x, y);
+      }
+    }
+  }
+  draw(g: CanvasRenderingContext2D) {
+    for (let y = 0; y < this.map.length; y++) {
+      for (let x = 0; x < this.map[y].length; x++) {
+        this.map[y][x].draw(g, x, y);
+      }
+    }
+  }
 }
 let map = new Map();
 function assertExhausted(x: never): never {
@@ -372,15 +395,6 @@ function transformTile(tile: RawTile) {
       return new LockTile(BLUE_KEY);
     default:
       assertExhausted(tile);
-  }
-}
-function transformMap(map: Map) {
-  map.setMap(new Array(rawMap.length));
-  for (let y = 0; y < rawMap.length; y++) {
-    map.getMap()[y] = new Array(rawMap[y].length);
-    for (let x = 0; x < rawMap[y].length; x++) {
-      map.getMap()[y][x] = transformTile(rawMap[y][x]);
-    }
   }
 }
 
@@ -427,21 +441,13 @@ const BLUE_KEY = new KeyConfiguration('#00ccff', false, new RemoveLock2());
 
 function update(map: Map, player: Player) {
   handleInputs(map, player);
-  updateMap(map);
+  map.update();
 }
 
 function handleInputs(map: Map, player: Player) {
   while (inputs.length > 0) {
     let input = inputs.pop();
     input.handle(map, player);
-  }
-}
-
-function updateMap(map: Map) {
-  for (let y = map.getMap().length - 1; y >= 0; y--) {
-    for (let x = 0; x < map.getMap()[y].length; x++) {
-      map.getMap()[y][x].update(map, x, y);
-    }
   }
 }
 
@@ -454,16 +460,8 @@ function createGraphics() {
 
 function draw(map: Map, player: Player) {
   let g = createGraphics();
-  drawMap(map, g);
+  map.draw(g);
   player.draw(g);
-}
-
-function drawMap(map: Map, g: CanvasRenderingContext2D) {
-  for (let y = 0; y < map.getMap().length; y++) {
-    for (let x = 0; x < map.getMap()[y].length; x++) {
-      map.getMap()[y][x].draw(g, x, y);
-    }
-  }
 }
 
 function gameLoop(map: Map) {
@@ -477,7 +475,7 @@ function gameLoop(map: Map) {
 }
 
 window.onload = () => {
-  transformMap(map);
+  map.transform();
   gameLoop(map);
 };
 
