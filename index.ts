@@ -22,7 +22,7 @@ class Right implements Input {
   }
 
   handle() {
-    map[player.getY()][player.getX() + 1].moveHorizontal(player, 1);
+    player.moveHorizontal(1);
   }
 }
 class Left implements Input {
@@ -40,7 +40,7 @@ class Left implements Input {
   }
 
   handle() {
-    map[player.getY()][player.getX() - 1].moveHorizontal(player, -1);
+    player.moveHorizontal(-1);
   }
 }
 class Up implements Input {
@@ -58,7 +58,7 @@ class Up implements Input {
   }
 
   handle() {
-    map[player.getY() - 1][player.getX()].moveVertical(player, -1);
+    player.moveVertical(-1);
   }
 }
 class Down implements Input {
@@ -76,7 +76,7 @@ class Down implements Input {
   }
 
   handle() {
-    map[player.getY() + 1][player.getX()].moveVertical(player, 1);
+    player.moveVertical(1);
   }
 }
 
@@ -106,10 +106,7 @@ class Resting implements FallingState {
   }
 
   moveHorizontal(tile: Tile, dx: number) {
-    if (map[player.getY()][player.getX() + dx + dx].isAir() && !map[player.getY() + 1][player.getX() + dx].isAir()) {
-      map[player.getY()][player.getX() + dx + dx] = tile;
-      moveToTile(player.getX() + dx, player.getY());
-    }
+    player.pushHorizontal(tile, dx);
   }
 
   drop(tile: Tile, x: number, y: number) {}
@@ -142,11 +139,11 @@ class Air implements Tile {
 
   draw(g: CanvasRenderingContext2D) {}
   moveHorizontal(player: Player, dx: number) {
-    moveToTile(player.getX() + dx, player.getY());
+    player.move(dx, 0);
   }
 
   moveVertical(player: Player, dy: number) {
-    moveToTile(player.getX(), player.getY() + dy);
+    player.move(0, dy);
   }
 
   update(x: number, y: number) {}
@@ -171,11 +168,11 @@ class Flux implements Tile {
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
   moveHorizontal(player: Player, dx: number) {
-    moveToTile(player.getX() + dx, player.getY());
+    player.move(dx, 0);
   }
 
   moveVertical(player: Player, dy: number) {
-    moveToTile(player.getX(), player.getY() + dy);
+    player.move(0, dy);
   }
 
   update(x: number, y: number) {}
@@ -234,25 +231,35 @@ class Player {
   private x = 1;
   private y = 1;
 
-  getX() {
-    return this.x;
-  }
-
-  getY() {
-    return this.y;
-  }
-
-  setX(x: number) {
-    this.x = x;
-  }
-
-  setY(y: number) {
-    this.y = y;
-  }
-
   draw(g: CanvasRenderingContext2D) {
     g.fillStyle = '#ff0000';
     g.fillRect(this.x * TILE_SIZE, this.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+  }
+
+  moveHorizontal(dx: number) {
+    map[this.y][this.x + dx].moveHorizontal(this, dx);
+  }
+
+  moveToTile(newx: number, newy: number) {
+    map[this.y][this.x] = new Air();
+    map[newy][newx] = new PlayerTile();
+    this.x = newx;
+    this.y = newy;
+  }
+
+  move(dx: number, dy: number) {
+    this.moveToTile(this.x + dx, this.y + dy);
+  }
+
+  pushHorizontal(tile: Tile, dx: number) {
+    if (map[this.y][this.x + dx + dx].isAir() && !map[this.y + 1][this.x + dx].isAir()) {
+      map[this.y][this.x + dx + dx] = tile;
+      this.moveToTile(this.x + dx, this.y);
+    }
+  }
+
+  moveVertical(dy: number) {
+    map[this.y + dy][this.x].moveVertical(this, dy);
   }
 }
 
@@ -265,7 +272,6 @@ class FallingStrategy {
   update(tile: Tile, x: number, y: number) {
     // 4.1.1 Rule: Do not use else in if statements
     this.falling = map[y + 1][x].getBlockOnTopState();
-
     this.falling.drop(tile, x, y);
   }
 
@@ -399,11 +405,11 @@ class Key implements Tile {
 
   moveHorizontal(player: Player, dx: number) {
     this.keyConf.removeLock();
-    moveToTile(player.getX() + dx, player.getY());
+    player.move(dx, 0);
   }
   moveVertical(player: Player, dy: number) {
     this.keyConf.removeLock();
-    moveToTile(player.getX(), player.getY() + dy);
+    player.move(0, dy);
   }
 
   update(x: number, y: number) {}
@@ -528,10 +534,7 @@ function remove(shouldRemove: RemoveStrategy) {
 }
 
 function moveToTile(newx: number, newy: number) {
-  map[player.getY()][player.getX()] = new Air();
-  map[newy][newx] = new PlayerTile();
-  player.setX(newx);
-  player.setY(newy);
+  player.moveToTile(newx, newy);
 }
 
 function handleInputs() {
