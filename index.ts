@@ -294,9 +294,6 @@ class Stone implements Tile {
     return false;
   }
 
-  isFalling() {
-    return this.fallingStrategy.getFalling().isFalling();
-  }
   draw(g: CanvasRenderingContext2D, x: number, y: number) {
     g.fillStyle = '#0000cc';
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
