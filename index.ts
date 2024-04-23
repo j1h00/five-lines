@@ -524,7 +524,7 @@ function remove(shouldRemove: RemoveStrategy) {
 
 function moveToTile(newx: number, newy: number) {
   map[player.getY()][player.getX()] = new Air();
-  map[newy][newx] = new Player();
+  map[newy][newx] = new PlayerTile();
   player.setX(newx);
   player.setY(newy);
 }
