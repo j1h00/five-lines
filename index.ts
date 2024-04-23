@@ -309,12 +309,9 @@ class Player {
     this.moveToTile(map, this.x + dx, this.y + dy);
   }
   pushHorizontal(map: Map, tile: Tile, dx: number) {
-    if (map.isAir(this.x + dx + dx, this.y) && !map.isAir(this.x + dx, this.y + 1)) {
-      map.setTile(this.x + dx + dx, this.y, tile);
-      this.moveToTile(map, this.x + dx, this.y);
-    }
+    map.pushHorizontal(this, tile, this.x, this.y, dx);
   }
-  private moveToTile(map: Map, newx: number, newy: number) {
+  moveToTile(map: Map, newx: number, newy: number) {
     map.movePlayer(this.x, this.y, newx, newy);
     this.x = newx;
     this.y = newy;
@@ -364,9 +361,6 @@ class Map {
   getBlockOnTopState(x: number, y: number) {
     return this.map[y][x].getBlockOnTopState();
   }
-  setTile(x: number, y: number, tile: Tile) {
-    this.map[y][x] = tile;
-  }
   movePlayer(x: number, y: number, newx: number, newy: number) {
     this.map[y][x] = new Air();
     this.map[newy][newx] = new PlayerTile();
@@ -384,6 +378,12 @@ class Map {
           this.map[y][x] = new Air();
         }
       }
+    }
+  }
+  pushHorizontal(player: Player, tile: Tile, x: number, y: number, dx: number) {
+    if (this.map[y][x + dx + dx].isAir() && !this.map[y + 1][x + dx].isAir()) {
+      this.map[y][x + dx + dx] = tile;
+      player.moveToTile(this, x + dx, y);
     }
   }
 }
