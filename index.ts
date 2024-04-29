@@ -416,7 +416,7 @@ class Map {
     for (let y = 0; y < rawMap.length; y++) {
       this.map[y] = new Array(rawMap[y].length);
       for (let x = 0; x < rawMap[y].length; x++) {
-        this.map[y][x] = transformTile(RAW_TILES[rawMap[y][x]]);
+        this.map[y][x] = RAW_TILES[rawMap[y][x]].transform();
       }
     }
   }
@@ -473,9 +473,6 @@ class Map {
 let map = new Map();
 function assertExhausted(x: never): never {
   throw new Error('Unexpected object: ' + x);
-}
-function transformTile(tile: RawTile2) {
-  return tile.transform();
 }
 
 let inputs: Input[] = [];
